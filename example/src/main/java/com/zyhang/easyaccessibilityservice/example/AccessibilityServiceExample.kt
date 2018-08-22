@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import com.zyhang.easyaccessibilityservice.EasyAccessibilityService
 import com.zyhang.easyaccessibilityservice.Situation
-import com.zyhang.easyaccessibilityservice.example.situations.MainSituation
+import com.zyhang.easyaccessibilityservice.example.situations.NotificationSituation
 
 /**
  * Created by zyhang on 2018/8/22.10:50
@@ -12,7 +12,7 @@ import com.zyhang.easyaccessibilityservice.example.situations.MainSituation
 
 class AccessibilityServiceExample : EasyAccessibilityService() {
     override fun firstSituations(): Array<Situation> {
-        return arrayOf(MainSituation())
+        return arrayOf(NotificationSituation())
     }
 
     override fun onServiceConnected() {

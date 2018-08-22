@@ -21,6 +21,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun resetSituation(view: View) {
+        EasyASPlugin.getEasyAccessibilityService()?.reset()
+    }
+
     fun toSetting(view: View) {
         EasyASUtils.toAccessibilitySetting(this)
     }

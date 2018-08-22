@@ -13,9 +13,20 @@ import android.view.accessibility.AccessibilityEvent;
 public final class EasyASPlugin {
 
     private static final String TAG = "EasyAS";
+    @Nullable
+    private static volatile EasyAccessibilityService easyAccessibilityService;
     private static volatile boolean logEnable;
     @Nullable
     private static volatile Predicate beforeExecutePredicate;
+
+    public static void setEasyAccessibilityService(@NonNull EasyAccessibilityService service) {
+        easyAccessibilityService = service;
+    }
+
+    @Nullable
+    public static EasyAccessibilityService getEasyAccessibilityService() {
+        return easyAccessibilityService;
+    }
 
     public static void setLogEnable(boolean enable) {
         logEnable = enable;

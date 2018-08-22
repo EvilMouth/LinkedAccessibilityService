@@ -20,8 +20,9 @@ abstract public class EasyAccessibilityService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
+        EasyASPlugin.setEasyAccessibilityService(this);
         EasyASPlugin.log("onServiceConnected");
-        situations = firstSituations();
+        reset();
     }
 
     @CallSuper
@@ -46,8 +47,10 @@ abstract public class EasyAccessibilityService extends AccessibilityService {
                     return;
                 }
                 EasyASPlugin.log(String.format("start execute %s", situation.getClass().getSimpleName()));
-                situations = situation.nextSituations();
-                situation.execute(this);
+                if (situation.execute(this, event)) {
+                    situations = situation.nextSituations();
+                    EasyASPlugin.log(String.format("execute %s success", situation.getClass().getSimpleName()));
+                }
                 break;
             }
         }
@@ -67,6 +70,11 @@ abstract public class EasyAccessibilityService extends AccessibilityService {
 
     @NonNull
     abstract public Situation[] firstSituations();
+
+    @CallSuper
+    public void reset() {
+        situations = firstSituations();
+    }
 
     private static boolean matchType(int eventType, int eventTypes) {
         while (eventTypes != 0) {

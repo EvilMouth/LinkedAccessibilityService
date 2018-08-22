@@ -19,7 +19,11 @@ class CloseRedPackageSituation : Situation {
 
     override fun execute(accessibilityService: AccessibilityService, accessibilityEvent: AccessibilityEvent): Boolean {
         // 回到桌面
-        return accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+        return accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                &&
+                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                &&
+                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
 
     override fun nextSituations(): Array<Situation> {

@@ -26,7 +26,7 @@ public class EasyASUtils {
      * @param text target text
      * @return True if node exist and click
      */
-    public static boolean findTextExist(AccessibilityNodeInfo rootNode, String text) {
+    public static boolean isTextExist(AccessibilityNodeInfo rootNode, String text) {
         List<AccessibilityNodeInfo> list = null;
         if (null != rootNode) {
             list = rootNode.findAccessibilityNodeInfosByText(text);

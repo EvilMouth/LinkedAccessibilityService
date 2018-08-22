@@ -17,7 +17,7 @@ class ClickRedPackageMessageSituation : Situation {
     override fun match(accessibilityService: AccessibilityService, accessibilityEvent: AccessibilityEvent): Boolean {
         return "com.tencent.mm.ui.LauncherUI" == accessibilityEvent.className.toString()
                 &&
-                EasyASUtils.findTextExist(accessibilityService.rootInActiveWindow, "领取红包")
+                EasyASUtils.isTextExist(accessibilityService.rootInActiveWindow, "领取红包")
     }
 
     override fun execute(accessibilityService: AccessibilityService, accessibilityEvent: AccessibilityEvent): Boolean {

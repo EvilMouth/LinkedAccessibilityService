@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">微信抢红包</string>
-    <string name="app_description">EasyAccessibilityService 微信抢红包例子</string>
+    <string name="app_name">LinkedAS 微信抢红包</string>
+    <string name="app_description">LinkedAccessibilityService 微信抢红包例子</string>
 </resources>

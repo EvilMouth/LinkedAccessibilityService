@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.zyhang.easyaccessibilityservice.example">
+          package="com.zyhang.linkedaccessibilityservice.example">
 
     <application
         android:allowBackup="true"
@@ -22,7 +22,7 @@
                 <action android:name="android.intent.action.VIEW"/>
 
                 <data
-                    android:host="easyaccessibilityservice"
+                    android:host="linkedaccessibilityservice"
                     android:scheme="zyhang"/>
             </intent-filter>
         </activity>

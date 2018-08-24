@@ -42,6 +42,6 @@ class NotificationSituation : Situation {
     }
 
     override fun nextSituations(): Array<Situation> {
-        return arrayOf(ChatSituation())
+        return arrayOf(ConversationToReceiveSituation())
     }
 }

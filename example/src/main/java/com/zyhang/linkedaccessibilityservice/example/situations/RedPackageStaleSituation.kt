@@ -28,13 +28,9 @@ class RedPackageStaleSituation : Situation {
 
     override fun execute(accessibilityService: AccessibilityService, accessibilityEvent: AccessibilityEvent): Boolean {
         return accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                &&
-                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                &&
-                accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
     }
 
     override fun nextSituations(): Array<Situation> {
-        return arrayOf(NotificationSituation())
+        return arrayOf(ConversationToReceiveSituation())
     }
 }

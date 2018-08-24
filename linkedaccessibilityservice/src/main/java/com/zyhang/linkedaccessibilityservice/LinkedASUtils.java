@@ -16,6 +16,9 @@ import java.util.List;
 
 public class LinkedASUtils {
 
+    /**
+     * jump to accessibility setting page
+     */
     public static void toAccessibilitySetting(@NonNull Context context) {
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

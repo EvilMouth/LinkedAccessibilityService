@@ -20,30 +20,30 @@ public final class LinkedASPlugin {
     private static volatile Predicate beforeExecutePredicate;
 
     public static void setLinkedAccessibilityService(@NonNull LinkedAccessibilityService service) {
-        linkedAccessibilityService = service;
+        LinkedASPlugin.linkedAccessibilityService = service;
     }
 
     @Nullable
     public static LinkedAccessibilityService getLinkedAccessibilityService() {
-        return linkedAccessibilityService;
+        return LinkedASPlugin.linkedAccessibilityService;
     }
 
     public static void setLogEnable(boolean enable) {
-        logEnable = enable;
+        LinkedASPlugin.logEnable = enable;
     }
 
     @Nullable
     public static Predicate getBeforeExecutePredicate() {
-        return beforeExecutePredicate;
+        return LinkedASPlugin.beforeExecutePredicate;
     }
 
     public static void setBeforeExecutePredicate(@NonNull Predicate predicate) {
-        beforeExecutePredicate = predicate;
+        LinkedASPlugin.beforeExecutePredicate = predicate;
     }
 
     static void log(String msg) {
-        if (logEnable) {
-            Log.i(TAG, msg);
+        if (LinkedASPlugin.logEnable) {
+            Log.i(LinkedASPlugin.TAG, msg);
         }
     }
 

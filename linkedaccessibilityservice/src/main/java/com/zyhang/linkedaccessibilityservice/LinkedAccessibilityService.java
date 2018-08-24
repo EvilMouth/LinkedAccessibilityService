@@ -37,21 +37,23 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         }
         LinkedASPlugin.log("current situations === " + Arrays.toString(situations));
         for (Situation situation : situations) {
-            if (matchType(eventType, situation.eventTypes())
-                    &&
-                    situation.match(this, event)) {
+            if (situation instanceof TestSituation) {
+                situation.match(this, event);
+                break;
+            } else if (matchType(eventType, situation.eventTypes())
+                    && situation.match(this, event)) {
                 LinkedASPlugin.log(String.format("situation: %s match", situation.getClass().getSimpleName()));
                 LinkedASPlugin.Predicate predicate = LinkedASPlugin.getBeforeExecutePredicate();
                 if (predicate != null && !predicate.test(this, event, situation)) {
                     LinkedASPlugin.log("beforeExecutePredicate test false");
-                    return;
+                    continue;
                 }
                 LinkedASPlugin.log(String.format("start execute %s", situation.getClass().getSimpleName()));
                 if (situation.execute(this, event)) {
                     situations = situation.nextSituations();
                     LinkedASPlugin.log(String.format("execute %s success", situation.getClass().getSimpleName()));
+                    break;
                 }
-                break;
             }
         }
     }

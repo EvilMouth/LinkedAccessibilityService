@@ -28,7 +28,7 @@ public final class LinkedASPlugin {
         return LinkedASPlugin.linkedAccessibilityService;
     }
 
-    public static void setLogEnable(boolean enable) {
+    public static void enableLogger(boolean enable) {
         LinkedASPlugin.logEnable = enable;
     }
 
@@ -51,6 +51,9 @@ public final class LinkedASPlugin {
         /**
          * Test the given input value and return a boolean.
          *
+         * @param accessibilityService the accessibilityService
+         * @param accessibilityEvent   current accessibilityEvent
+         * @param situation            current situation
          * @return the boolean result
          */
         boolean test(AccessibilityService accessibilityService, AccessibilityEvent accessibilityEvent, Situation situation);

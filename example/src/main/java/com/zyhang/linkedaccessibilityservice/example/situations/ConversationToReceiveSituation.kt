@@ -13,7 +13,7 @@ import com.zyhang.linkedaccessibilityservice.Situation
 
 class ConversationToReceiveSituation : Situation {
 
-    private var receiveRedPackageSuccess = false
+    private var receiveLuckyMoneySuccess = false
 
     override fun eventTypes(): Int {
         return AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
@@ -24,8 +24,8 @@ class ConversationToReceiveSituation : Situation {
     }
 
     override fun execute(accessibilityService: AccessibilityService, accessibilityEvent: AccessibilityEvent): Boolean {
-        receiveRedPackageSuccess = LinkedASUtils.findAndClickByText(accessibilityService.rootInActiveWindow, "领取红包", true)
-        if (!receiveRedPackageSuccess) {
+        receiveLuckyMoneySuccess = LinkedASUtils.findAndClickByText(accessibilityService.rootInActiveWindow, "领取红包", true)
+        if (!receiveLuckyMoneySuccess) {
             accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
             accessibilityService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
         }
@@ -33,8 +33,8 @@ class ConversationToReceiveSituation : Situation {
     }
 
     override fun nextSituations(): Array<Situation> {
-        return if (receiveRedPackageSuccess) {
-            arrayOf(RedPackageFreshSituation(), RedPackageStaleSituation())
+        return if (receiveLuckyMoneySuccess) {
+            arrayOf(LuckyMoneyFreshSituation(), LuckyMoneyStaleSituation())
         } else {
             arrayOf(NotificationSituation())
         }

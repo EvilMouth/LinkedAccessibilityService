@@ -18,6 +18,8 @@ public class LinkedASUtils {
 
     /**
      * jump to accessibility setting page
+     *
+     * @param context the context
      */
     public static void toAccessibilitySetting(@NonNull Context context) {
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
@@ -28,7 +30,8 @@ public class LinkedASUtils {
     /**
      * find node by text
      *
-     * @param text target text
+     * @param rootNode The root node if this service can retrieve window content.
+     * @param text     target text
      * @return True if node exist and click
      */
     public static boolean isTextExist(AccessibilityNodeInfo rootNode, String text) {
@@ -42,7 +45,9 @@ public class LinkedASUtils {
     /**
      * find node by text and click
      *
-     * @param text target text
+     * @param rootNode The root node if this service can retrieve window content.
+     * @param text     target text
+     * @param reverse  True if reverse
      * @return True if node exist
      */
     public static boolean findAndClickByText(AccessibilityNodeInfo rootNode, String text, boolean reverse) {

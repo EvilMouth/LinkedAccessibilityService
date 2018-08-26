@@ -39,6 +39,7 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         for (Situation situation : situations) {
             if (situation instanceof TestSituation) {
                 situation.match(this, event);
+                situation.execute(this, event);
                 break;
             } else if (matchType(eventType, situation.eventTypes())
                     && situation.match(this, event)) {

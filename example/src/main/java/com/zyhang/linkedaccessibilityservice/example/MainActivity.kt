@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        LinkedASPlugin.setLogEnable(true)
+        LinkedASPlugin.enableLogger(true)
         LinkedASPlugin.setBeforeExecutePredicate { _, _, situation ->
             println("situation === ${situation::class.java.simpleName}")
             true

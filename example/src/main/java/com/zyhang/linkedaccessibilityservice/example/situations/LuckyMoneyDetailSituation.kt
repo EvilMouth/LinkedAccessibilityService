@@ -8,7 +8,7 @@ import com.zyhang.linkedaccessibilityservice.Situation
  * Created by zyhang on 2018/8/22.15:54
  */
 
-class RedPackageDetailSituation : Situation {
+class LuckyMoneyDetailSituation : Situation {
     override fun eventTypes(): Int {
         return AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
     }

@@ -7,9 +7,9 @@
 
 ## Usage
 
-看example
+没有，自己看example
 
 ## Installation
 ```groovy
-implementation 'com.zyhang:linkedaccessibilityservice:1.0.0'
+implementation 'com.zyhang:linkedaccessibilityservice:<latest-version>'
 ```

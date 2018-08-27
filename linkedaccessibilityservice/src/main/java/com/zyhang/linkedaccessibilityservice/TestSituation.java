@@ -1,7 +1,6 @@
 package com.zyhang.linkedaccessibilityservice;
 
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -14,7 +13,7 @@ import android.view.accessibility.AccessibilityEvent;
 abstract public class TestSituation implements Situation {
     @Override
     final public int eventTypes() {
-        return AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
+        return AccessibilityEvent.TYPES_ALL_MASK;
     }
 
     @Override

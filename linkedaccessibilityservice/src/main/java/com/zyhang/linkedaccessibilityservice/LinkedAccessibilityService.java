@@ -6,8 +6,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityEvent;
 
-import java.util.Arrays;
-
 /**
  * Created by zyhang on 2018/8/22.10:46
  */
@@ -29,19 +27,17 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         LinkedASPlugin.log("onAccessibilityEvent event === " + event.toString());
-        int eventType = event.getEventType();
-
         if (situations == null) {
             LinkedASPlugin.log("situations == null");
             return;
         }
-        LinkedASPlugin.log("current situations === " + Arrays.toString(situations));
+        LinkedASPlugin.log("current situations === " + toString(situations));
         for (Situation situation : situations) {
             if (situation instanceof TestSituation) {
                 situation.match(this, event);
                 situation.execute(this, event);
                 break;
-            } else if (matchType(eventType, situation.eventTypes())
+            } else if (matchType(event.getEventType(), situation.eventTypes())
                     && situation.match(this, event)) {
                 LinkedASPlugin.log(String.format("situation: %s match", situation.getClass().getSimpleName()));
                 LinkedASPlugin.Predicate predicate = LinkedASPlugin.getBeforeExecutePredicate();
@@ -77,6 +73,24 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
     @CallSuper
     public void reset() {
         situations = firstSituations();
+    }
+
+    private static String toString(Situation[] situations) {
+        if (situations == null)
+            return "null";
+
+        int iMax = situations.length - 1;
+        if (iMax == -1)
+            return "[]";
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0; ; i++) {
+            b.append(situations[i].getClass().getSimpleName());
+            if (i == iMax)
+                return b.append(']').toString();
+            b.append(", ");
+        }
     }
 
     private static boolean matchType(int eventType, int eventTypes) {

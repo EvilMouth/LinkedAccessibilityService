@@ -3,12 +3,13 @@ package com.zyhang.linkedaccessibilityservice;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by zyhang on 2018/8/22.15:25

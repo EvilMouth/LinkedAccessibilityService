@@ -2,9 +2,10 @@ package com.zyhang.linkedaccessibilityservice;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 
 /**
  * Created by zyhang on 2018/8/22.10:46

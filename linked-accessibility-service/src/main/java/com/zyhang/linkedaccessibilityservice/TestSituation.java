@@ -1,8 +1,9 @@
 package com.zyhang.linkedaccessibilityservice;
 
 import android.accessibilityservice.AccessibilityService;
-import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by zyhang on 2018/8/24.11:21

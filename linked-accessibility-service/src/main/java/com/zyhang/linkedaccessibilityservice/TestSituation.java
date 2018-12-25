@@ -31,10 +31,10 @@ abstract public class TestSituation implements Situation {
 
     @Override
     final public Situation[] nextSituations() {
-        return new Situation[0];
+        throw new RuntimeException("this method should not be called");
     }
 
-    abstract public void testMatch(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent);
+    abstract protected void testMatch(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent);
 
-    abstract public void testExecute(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent);
+    abstract protected void testExecute(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent);
 }

@@ -1,7 +1,6 @@
 package com.zyhang.linkedaccessibilityservice;
 
 import android.accessibilityservice.AccessibilityService;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.NonNull;
@@ -13,10 +12,10 @@ import androidx.annotation.Nullable;
 
 public final class LinkedASPlugin {
 
-    private static final String TAG = "LinkedAS";
     @Nullable
     private static volatile LinkedAccessibilityService linkedAccessibilityService;
-    private static volatile boolean logEnable;
+    @Nullable
+    private static volatile LogCallback logCallback;
     @Nullable
     private static volatile Predicate beforeExecutePredicate;
 
@@ -29,8 +28,13 @@ public final class LinkedASPlugin {
         return LinkedASPlugin.linkedAccessibilityService;
     }
 
-    public static void enableLogger(boolean enable) {
-        LinkedASPlugin.logEnable = enable;
+    @Nullable
+    public static LogCallback getLogCallback() {
+        return logCallback;
+    }
+
+    public static void setLogCallback(@NonNull LogCallback logCallback) {
+        LinkedASPlugin.logCallback = logCallback;
     }
 
     @Nullable
@@ -43,19 +47,30 @@ public final class LinkedASPlugin {
     }
 
     static void log(String msg) {
-        if (LinkedASPlugin.logEnable) {
-            Log.i(LinkedASPlugin.TAG, msg);
+        LogCallback logCallback = LinkedASPlugin.logCallback;
+        if (logCallback != null) {
+            logCallback.print(msg);
         }
+    }
+
+    public interface LogCallback {
+        /**
+         * custom your log
+         *
+         * @param msg log
+         */
+        void print(String msg);
     }
 
     public interface Predicate {
         /**
-         * Test the given input value and return a boolean.
+         * Test the situation before execute and return a boolean.
          *
          * @param accessibilityService the accessibilityService
          * @param accessibilityEvent   current accessibilityEvent
          * @param situation            current situation
-         * @return the boolean result
+         * @return False will pass this situation
+         * @see LinkedAccessibilityService#onAccessibilityEvent(AccessibilityEvent)
          */
         boolean test(AccessibilityService accessibilityService, AccessibilityEvent accessibilityEvent, Situation situation);
     }

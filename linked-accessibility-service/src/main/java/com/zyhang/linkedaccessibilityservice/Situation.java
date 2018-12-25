@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 /**
  * Created by zyhang on 2018/8/22.10:53
+ * @see LinkedAccessibilityService#onAccessibilityEvent(AccessibilityEvent)
  */
 
 public interface Situation {

@@ -34,23 +34,31 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         }
         LinkedASPlugin.log("current situations === " + toString(situations));
         for (Situation situation : situations) {
+            // you can extends TestSituation to test some code
             if (situation instanceof TestSituation) {
                 situation.match(this, event);
                 situation.execute(this, event);
                 break;
-            } else if (matchType(event.getEventType(), situation.eventTypes())
-                    && situation.match(this, event)) {
-                LinkedASPlugin.log(String.format("situation: %s match", situation.getClass().getSimpleName()));
-                LinkedASPlugin.Predicate predicate = LinkedASPlugin.getBeforeExecutePredicate();
-                if (predicate != null && !predicate.test(this, event, situation)) {
-                    LinkedASPlugin.log("beforeExecutePredicate test false");
-                    continue;
-                }
-                LinkedASPlugin.log(String.format("start execute %s", situation.getClass().getSimpleName()));
-                if (situation.execute(this, event)) {
-                    situations = situation.nextSituations();
-                    LinkedASPlugin.log(String.format("execute %s success", situation.getClass().getSimpleName()));
-                    break;
+            } else {
+                // check the event is match the situation
+                if (matchType(event.getEventType(), situation.eventTypes())
+                        && situation.match(this, event)) {
+                    String situationName = situation.getClass().getSimpleName();
+                    LinkedASPlugin.log(String.format("situation: %s match", situationName));
+                    // you can plugin in
+                    LinkedASPlugin.Predicate predicate = LinkedASPlugin.getBeforeExecutePredicate();
+                    if (predicate != null && !predicate.test(this, event, situation)) {
+                        LinkedASPlugin.log("beforeExecutePredicate test false");
+                        continue;
+                    }
+                    // execute the matched situation
+                    LinkedASPlugin.log(String.format("executing %s", situationName));
+                    if (situation.execute(this, event)) {
+                        // make next situations
+                        situations = situation.nextSituations();
+                        LinkedASPlugin.log(String.format("execute %s success", situationName));
+                        break;
+                    }
                 }
             }
         }
@@ -68,14 +76,26 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         LinkedASPlugin.log("onInterrupt");
     }
 
+    /**
+     * @return the init situations
+     */
     @NonNull
     abstract public Situation[] firstSituations();
 
+    /**
+     * reset state
+     */
     @CallSuper
     public void reset() {
         situations = firstSituations();
     }
 
+    /**
+     * log situations
+     *
+     * @param situations situation array
+     * @return log
+     */
     private static String toString(Situation[] situations) {
         if (situations == null)
             return "null";
@@ -94,6 +114,13 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         }
     }
 
+    /**
+     * check is match
+     *
+     * @param eventType  target
+     * @param eventTypes flags
+     * @return True if match
+     */
     private static boolean matchType(int eventType, int eventTypes) {
         while (eventTypes != 0) {
             final int eventTypeBit = (1 << Integer.numberOfTrailingZeros(eventTypes));

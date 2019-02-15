@@ -1,8 +1,11 @@
 package com.zyhang.linkedaccessibilityservice;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
@@ -16,6 +19,26 @@ import androidx.annotation.NonNull;
  */
 
 public class LinkedASUtils {
+
+    public static boolean isServiceOpen(@NonNull Context context, @NonNull Class<? extends AccessibilityService> cls) {
+        try {
+            int enable = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 0);
+            if (enable != 1)
+                return false;
+            String services = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            if (!TextUtils.isEmpty(services)) {
+                TextUtils.SimpleStringSplitter split = new TextUtils.SimpleStringSplitter(':');
+                split.setString(services);
+                while (split.hasNext()) {
+                    if (split.next().equalsIgnoreCase(context.getPackageName() + "/" + cls.getName()))
+                        return true;
+                }
+            }
+        } catch (Throwable e) {
+            Log.e("LinkedASUtils", "isServiceOpen: " + e.getMessage());
+        }
+        return false;
+    }
 
     /**
      * jump to accessibility setting page

@@ -12,7 +12,7 @@ import com.zyhang.linkedaccessibilityservice.LinkedASUtils
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "MainActivity"
+        private const val TAG = "MainActivity"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +26,11 @@ class MainActivity : AppCompatActivity() {
             println("situation === ${situation::class.java.simpleName}")
             true
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "isOpen -> ${LinkedASUtils.isServiceOpen(this, AccessibilityServiceExample::class.java)}")
     }
 
     fun resetSituation(view: View) {

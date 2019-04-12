@@ -42,7 +42,7 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         }
         for (Situation situation : situations) {
             // log node info if situation instanceof NodeInfoPrintable
-            if (!LinkedASPlugin.isGlobalNodeInfoPrintable() || situation instanceof NodeInfoPrintable) {
+            if (!LinkedASPlugin.isGlobalNodeInfoPrintable() && situation instanceof NodeInfoPrintable) {
                 LinkedASPlugin.printNodeInfo(this, event);
             }
             // check the type correct

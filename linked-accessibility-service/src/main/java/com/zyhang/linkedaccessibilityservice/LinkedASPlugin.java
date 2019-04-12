@@ -2,6 +2,10 @@ package com.zyhang.linkedaccessibilityservice;
 
 import android.accessibilityservice.AccessibilityService;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+
+import com.zyhang.linkedaccessibilityservice.print.DefaultNodeInfoPrinter;
+import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrinter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,14 +14,34 @@ import androidx.annotation.Nullable;
  * Created by zyhang on 2018/8/22.14:14
  */
 
+@SuppressWarnings("WeakerAccess")
 public final class LinkedASPlugin {
 
     @Nullable
     private static volatile LinkedAccessibilityService linkedAccessibilityService;
+    /**
+     * kept the latest event source node info
+     */
+    @Nullable
+    private static volatile AccessibilityNodeInfo currentEventSource;
+    /**
+     * custom your own log utils
+     */
     @Nullable
     private static volatile LogCallback logCallback;
+    /**
+     * intercept situation before match callback
+     */
     @Nullable
     private static volatile Predicate beforeExecutePredicate;
+    /**
+     * if set
+     * all event will print tree of nodeInfo
+     * @see DefaultNodeInfoPrinter
+     */
+    private static volatile boolean globalNodeInfoPrintable = false;
+    @Nullable
+    private static volatile NodeInfoPrinter nodeInfoPrinter = new DefaultNodeInfoPrinter();
 
     public static void setLinkedAccessibilityService(@NonNull LinkedAccessibilityService service) {
         LinkedASPlugin.linkedAccessibilityService = service;
@@ -29,8 +53,17 @@ public final class LinkedASPlugin {
     }
 
     @Nullable
+    public static AccessibilityNodeInfo getCurrentEventSource() {
+        return LinkedASPlugin.currentEventSource;
+    }
+
+    public static void setCurrentEventSource(@Nullable AccessibilityNodeInfo currentEventSource) {
+        LinkedASPlugin.currentEventSource = currentEventSource;
+    }
+
+    @Nullable
     public static LogCallback getLogCallback() {
-        return logCallback;
+        return LinkedASPlugin.logCallback;
     }
 
     public static void setLogCallback(@NonNull LogCallback logCallback) {
@@ -46,10 +79,34 @@ public final class LinkedASPlugin {
         LinkedASPlugin.beforeExecutePredicate = predicate;
     }
 
-    static void log(String msg) {
-        LogCallback logCallback = LinkedASPlugin.logCallback;
+    public static boolean isGlobalNodeInfoPrintable() {
+        return LinkedASPlugin.globalNodeInfoPrintable;
+    }
+
+    public static void setGlobalNodeInfoPrintable(boolean globalNodeInfoPrintable) {
+        LinkedASPlugin.globalNodeInfoPrintable = globalNodeInfoPrintable;
+    }
+
+    @Nullable
+    public static NodeInfoPrinter getNodeInfoPrinter() {
+        return LinkedASPlugin.nodeInfoPrinter;
+    }
+
+    public static void setNodeInfoPrinter(@Nullable NodeInfoPrinter nodeInfoPrinter) {
+        LinkedASPlugin.nodeInfoPrinter = nodeInfoPrinter;
+    }
+
+    public static void log(String msg) {
+        LogCallback logCallback = LinkedASPlugin.getLogCallback();
         if (logCallback != null) {
             logCallback.print(msg);
+        }
+    }
+
+    public static void printNodeInfo(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent) {
+        NodeInfoPrinter nodeInfoPrinter = LinkedASPlugin.getNodeInfoPrinter();
+        if (nodeInfoPrinter != null) {
+            nodeInfoPrinter.print(accessibilityService, accessibilityEvent);
         }
     }
 

@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             println("situation === ${situation::class.java.simpleName}")
             true
         }
+        LinkedASPlugin.setGlobalNodeInfoPrintable(true)
     }
 
     override fun onResume() {

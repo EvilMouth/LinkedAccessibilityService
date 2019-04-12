@@ -4,6 +4,8 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrintable;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
@@ -27,6 +29,7 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
     @CallSuper
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
+        LinkedASPlugin.setCurrentEventSource(event.getSource());
         LinkedASPlugin.log("onAccessibilityEvent event === " + event.toString());
         if (situations == null) {
             LinkedASPlugin.log("situations == null");
@@ -34,18 +37,17 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         }
         LinkedASPlugin.log("current situations === " + toString(situations));
         for (Situation situation : situations) {
-            // you can extends TestSituation to test some code
-            if (situation instanceof TestSituation) {
-                situation.match(this, event);
-                situation.execute(this, event);
-                break;
-            } else {
-                // check the event is match the situation
-                if (matchType(event.getEventType(), situation.eventTypes())
-                        && situation.match(this, event)) {
+            // log node info if global log enable or situation instanceof NodeInfoPrintable
+            if (LinkedASPlugin.isGlobalNodeInfoPrintable() || situation instanceof NodeInfoPrintable) {
+                LinkedASPlugin.printNodeInfo(this, event);
+            }
+            // check the type correct
+            if (matchType(event.getEventType(), situation.eventTypes())) {
+                // check the situation is match
+                if (situation.match(this, event)) {
                     String situationName = situation.getClass().getSimpleName();
                     LinkedASPlugin.log(String.format("situation: %s match", situationName));
-                    // you can plugin in
+                    // you can plugin in to intercept executor
                     LinkedASPlugin.Predicate predicate = LinkedASPlugin.getBeforeExecutePredicate();
                     if (predicate != null && !predicate.test(this, event, situation)) {
                         LinkedASPlugin.log("beforeExecutePredicate test false");

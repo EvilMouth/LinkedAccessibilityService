@@ -1,6 +1,7 @@
 package com.zyhang.linkedaccessibilityservice.print;
 
 import android.accessibilityservice.AccessibilityService;
+import android.graphics.Rect;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -11,9 +12,10 @@ import androidx.annotation.NonNull;
 /**
  * Created by zyhang on 2019/4/12.10:09
  */
+@SuppressWarnings("WeakerAccess")
 public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
 
-    private int floor;
+    protected int floor;
 
     @Override
     public void print(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent) {
@@ -23,7 +25,7 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
         LinkedASPlugin.log("################################################################################################################################");
     }
 
-    private void traverse(AccessibilityNodeInfo rootNodeInfo) {
+    protected void traverse(AccessibilityNodeInfo rootNodeInfo) {
         if (rootNodeInfo == null)
             return;
         logNodeInfo(floor, rootNodeInfo);
@@ -37,7 +39,7 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
         }
     }
 
-    private static void logNodeInfo(int floor, AccessibilityNodeInfo nodeInfo) {
+    protected void logNodeInfo(int floor, AccessibilityNodeInfo nodeInfo) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < floor; i++) {
             if (i == floor - 1) {
@@ -46,6 +48,12 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
             }
             sb.append("    ");
         }
-        LinkedASPlugin.log(String.format("%s%s; text=%s; desc=%s", sb.toString(), nodeInfo.getClassName(), nodeInfo.getText(), nodeInfo.getContentDescription()));
+        LinkedASPlugin.log(String.format("%s%s", sb.toString(), getLogInfo(nodeInfo)));
+    }
+
+    protected String getLogInfo(AccessibilityNodeInfo nodeInfo) {
+        Rect bounds = new Rect();
+        nodeInfo.getBoundsInScreen(bounds);
+        return String.format("%s; text=%s; desc=%s bounds=%s", nodeInfo.getClassName(), nodeInfo.getText(), nodeInfo.getContentDescription(), bounds.toShortString());
     }
 }

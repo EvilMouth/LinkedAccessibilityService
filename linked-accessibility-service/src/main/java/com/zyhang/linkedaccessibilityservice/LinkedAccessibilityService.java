@@ -36,9 +36,13 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
             return;
         }
         LinkedASPlugin.log("current situations === " + toString(situations));
+        // log node info if global log enable
+        if (LinkedASPlugin.isGlobalNodeInfoPrintable()) {
+            LinkedASPlugin.printNodeInfo(this, event);
+        }
         for (Situation situation : situations) {
-            // log node info if global log enable or situation instanceof NodeInfoPrintable
-            if (LinkedASPlugin.isGlobalNodeInfoPrintable() || situation instanceof NodeInfoPrintable) {
+            // log node info if situation instanceof NodeInfoPrintable
+            if (!LinkedASPlugin.isGlobalNodeInfoPrintable() || situation instanceof NodeInfoPrintable) {
                 LinkedASPlugin.printNodeInfo(this, event);
             }
             // check the type correct

@@ -9,5 +9,8 @@ import androidx.annotation.NonNull;
  * Created by zyhang on 2019/4/12.10:08
  */
 public interface NodeInfoPrinter {
+    /**
+     * call from background
+     */
     void print(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent);
 }

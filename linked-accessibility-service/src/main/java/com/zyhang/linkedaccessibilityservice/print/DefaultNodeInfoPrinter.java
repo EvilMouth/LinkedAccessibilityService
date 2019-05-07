@@ -5,9 +5,9 @@ import android.graphics.Rect;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.zyhang.linkedaccessibilityservice.LinkedASPlugin;
-
 import androidx.annotation.NonNull;
+
+import com.zyhang.linkedaccessibilityservice.LinkedASPlugin;
 
 /**
  * Created by zyhang on 2019/4/12.10:09
@@ -16,13 +16,17 @@ import androidx.annotation.NonNull;
 public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
 
     protected int floor;
+    protected StringBuilder msgSb = new StringBuilder();
 
     @Override
     public void print(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent) {
         floor = 0;
-        LinkedASPlugin.log("################################################################################################################################");
+        msgSb.delete(0, msgSb.length());
+
+        msgSb.append("################################################################################################################################\n");
         traverse(accessibilityService.getRootInActiveWindow());
-        LinkedASPlugin.log("################################################################################################################################");
+        msgSb.append("################################################################################################################################");
+        LinkedASPlugin.log(msgSb.toString());
     }
 
     protected void traverse(AccessibilityNodeInfo rootNodeInfo) {
@@ -48,7 +52,7 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
             }
             sb.append("    ");
         }
-        LinkedASPlugin.log(String.format("%s%s", sb.toString(), getLogInfo(nodeInfo)));
+        msgSb.append(String.format("%s%s\n", sb.toString(), getLogInfo(nodeInfo)));
     }
 
     protected String getLogInfo(AccessibilityNodeInfo nodeInfo) {

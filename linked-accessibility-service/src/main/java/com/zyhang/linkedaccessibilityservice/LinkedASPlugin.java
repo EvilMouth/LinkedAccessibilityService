@@ -33,8 +33,10 @@ public final class LinkedASPlugin {
      */
     @Nullable
     private static volatile LogCallback logCallback;
-    private static HandlerThread sLogHandlerThread;
-    private static Handler sLogHandler;
+    @Nullable
+    private static volatile HandlerThread logHandlerThread;
+    @Nullable
+    private static volatile Handler logHandler;
     /**
      * intercept situation before match callback
      */
@@ -75,10 +77,10 @@ public final class LinkedASPlugin {
 
     public static void setLogCallback(@Nullable LogCallback logCallback) {
         LinkedASPlugin.logCallback = logCallback;
-        if (LinkedASPlugin.sLogHandlerThread == null) {
-            LinkedASPlugin.sLogHandlerThread = new HandlerThread("logHandlerThread", Process.THREAD_PRIORITY_BACKGROUND);
-            LinkedASPlugin.sLogHandlerThread.start();
-            LinkedASPlugin.sLogHandler = new Handler(LinkedASPlugin.sLogHandlerThread.getLooper()) {
+        if (logCallback != null && LinkedASPlugin.logHandlerThread == null) {
+            HandlerThread handlerThread = new HandlerThread("logHandlerThread", Process.THREAD_PRIORITY_BACKGROUND);
+            handlerThread.start();
+            Handler handler = new Handler(handlerThread.getLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
                     switch (msg.what) {
@@ -98,7 +100,27 @@ public final class LinkedASPlugin {
                     }
                 }
             };
+            LinkedASPlugin.logHandlerThread = handlerThread;
+            LinkedASPlugin.logHandler = handler;
         }
+    }
+
+    @Nullable
+    public static HandlerThread getLogHandlerThread() {
+        return LinkedASPlugin.logHandlerThread;
+    }
+
+    public static void setLogHandlerThread(@Nullable HandlerThread logHandlerThread) {
+        LinkedASPlugin.logHandlerThread = logHandlerThread;
+    }
+
+    @Nullable
+    public static Handler getLogHandler() {
+        return LinkedASPlugin.logHandler;
+    }
+
+    public static void setLogHandler(@Nullable Handler logHandler) {
+        LinkedASPlugin.logHandler = logHandler;
     }
 
     @Nullable
@@ -130,7 +152,7 @@ public final class LinkedASPlugin {
     public static void log(String msg) {
         if (LinkedASPlugin.logCallback == null)
             return;
-        Handler logHandler = LinkedASPlugin.sLogHandler;
+        Handler logHandler = LinkedASPlugin.logHandler;
         if (logHandler != null) {
             Message message = Message.obtain();
             message.what = 1;
@@ -142,7 +164,7 @@ public final class LinkedASPlugin {
     public static void printNodeInfo(@NonNull AccessibilityEvent accessibilityEvent) {
         if (LinkedASPlugin.logCallback == null || LinkedASPlugin.nodeInfoPrinter == null)
             return;
-        Handler logHandler = LinkedASPlugin.sLogHandler;
+        Handler logHandler = LinkedASPlugin.logHandler;
         if (logHandler != null) {
             Message message = Message.obtain();
             message.what = 2;

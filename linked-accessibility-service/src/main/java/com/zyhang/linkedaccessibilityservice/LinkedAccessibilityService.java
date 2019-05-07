@@ -4,10 +4,10 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrintable;
-
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+
+import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrintable;
 
 /**
  * Created by zyhang on 2018/8/22.10:46
@@ -38,12 +38,12 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         LinkedASPlugin.log("current situations === " + toString(situations));
         // log node info if global log enable
         if (LinkedASPlugin.isGlobalNodeInfoPrintable()) {
-            LinkedASPlugin.printNodeInfo(this, event);
+            LinkedASPlugin.printNodeInfo(event);
         }
         for (Situation situation : situations) {
             // log node info if situation instanceof NodeInfoPrintable
             if (!LinkedASPlugin.isGlobalNodeInfoPrintable() && situation instanceof NodeInfoPrintable) {
-                LinkedASPlugin.printNodeInfo(this, event);
+                LinkedASPlugin.printNodeInfo(event);
             }
             // check the type correct
             if (matchType(event.getEventType(), situation.eventTypes())) {

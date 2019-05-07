@@ -1,14 +1,18 @@
 package com.zyhang.linkedaccessibilityservice;
 
 import android.accessibilityservice.AccessibilityService;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
+import android.os.Process;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.zyhang.linkedaccessibilityservice.print.DefaultNodeInfoPrinter;
-import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrinter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.zyhang.linkedaccessibilityservice.print.DefaultNodeInfoPrinter;
+import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrinter;
 
 /**
  * Created by zyhang on 2018/8/22.14:14
@@ -29,6 +33,8 @@ public final class LinkedASPlugin {
      */
     @Nullable
     private static volatile LogCallback logCallback;
+    private static HandlerThread sLogHandlerThread;
+    private static Handler sLogHandler;
     /**
      * intercept situation before match callback
      */
@@ -37,13 +43,14 @@ public final class LinkedASPlugin {
     /**
      * if set
      * all event will print tree of nodeInfo
+     *
      * @see DefaultNodeInfoPrinter
      */
     private static volatile boolean globalNodeInfoPrintable = false;
     @Nullable
     private static volatile NodeInfoPrinter nodeInfoPrinter = new DefaultNodeInfoPrinter();
 
-    public static void setLinkedAccessibilityService(@NonNull LinkedAccessibilityService service) {
+    public static void setLinkedAccessibilityService(@Nullable LinkedAccessibilityService service) {
         LinkedASPlugin.linkedAccessibilityService = service;
     }
 
@@ -66,8 +73,32 @@ public final class LinkedASPlugin {
         return LinkedASPlugin.logCallback;
     }
 
-    public static void setLogCallback(@NonNull LogCallback logCallback) {
+    public static void setLogCallback(@Nullable LogCallback logCallback) {
         LinkedASPlugin.logCallback = logCallback;
+        if (LinkedASPlugin.sLogHandlerThread == null) {
+            LinkedASPlugin.sLogHandlerThread = new HandlerThread("logHandlerThread", Process.THREAD_PRIORITY_BACKGROUND);
+            LinkedASPlugin.sLogHandlerThread.start();
+            LinkedASPlugin.sLogHandler = new Handler(LinkedASPlugin.sLogHandlerThread.getLooper()) {
+                @Override
+                public void handleMessage(Message msg) {
+                    switch (msg.what) {
+                        case 1:
+                            LogCallback logCallback = LinkedASPlugin.logCallback;
+                            if (logCallback != null) {
+                                logCallback.print(msg.obj.toString());
+                            }
+                            break;
+                        case 2:
+                            NodeInfoPrinter nodeInfoPrinter = LinkedASPlugin.nodeInfoPrinter;
+                            AccessibilityService accessibilityService = LinkedASPlugin.linkedAccessibilityService;
+                            if (nodeInfoPrinter != null && accessibilityService != null) {
+                                nodeInfoPrinter.print(accessibilityService, ((AccessibilityEvent) msg.obj));
+                            }
+                            break;
+                    }
+                }
+            };
+        }
     }
 
     @Nullable
@@ -75,7 +106,7 @@ public final class LinkedASPlugin {
         return LinkedASPlugin.beforeExecutePredicate;
     }
 
-    public static void setBeforeExecutePredicate(@NonNull Predicate predicate) {
+    public static void setBeforeExecutePredicate(@Nullable Predicate predicate) {
         LinkedASPlugin.beforeExecutePredicate = predicate;
     }
 
@@ -97,16 +128,26 @@ public final class LinkedASPlugin {
     }
 
     public static void log(String msg) {
-        LogCallback logCallback = LinkedASPlugin.getLogCallback();
-        if (logCallback != null) {
-            logCallback.print(msg);
+        if (LinkedASPlugin.logCallback == null)
+            return;
+        Handler logHandler = LinkedASPlugin.sLogHandler;
+        if (logHandler != null) {
+            Message message = Message.obtain();
+            message.what = 1;
+            message.obj = msg;
+            logHandler.sendMessage(message);
         }
     }
 
-    public static void printNodeInfo(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent) {
-        NodeInfoPrinter nodeInfoPrinter = LinkedASPlugin.getNodeInfoPrinter();
-        if (nodeInfoPrinter != null) {
-            nodeInfoPrinter.print(accessibilityService, accessibilityEvent);
+    public static void printNodeInfo(@NonNull AccessibilityEvent accessibilityEvent) {
+        if (LinkedASPlugin.logCallback == null || LinkedASPlugin.nodeInfoPrinter == null)
+            return;
+        Handler logHandler = LinkedASPlugin.sLogHandler;
+        if (logHandler != null) {
+            Message message = Message.obtain();
+            message.what = 2;
+            message.obj = accessibilityEvent;
+            logHandler.sendMessage(message);
         }
     }
 

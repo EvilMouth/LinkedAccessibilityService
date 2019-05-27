@@ -15,20 +15,14 @@ import com.zyhang.linkedaccessibilityservice.LinkedASPlugin;
 @SuppressWarnings("WeakerAccess")
 public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
 
-    private static final int MAXLENGTH = 2000;
-
     protected int floor;
-    protected StringBuilder msgSb = new StringBuilder();
 
     @Override
     public void print(@NonNull AccessibilityService accessibilityService, @NonNull AccessibilityEvent accessibilityEvent) {
         floor = 0;
-        msgSb.delete(0, msgSb.length());
-
-        msgSb.append("################################################################################################################################\n");
+        LinkedASPlugin.log("################################################################################################################################");
         traverse(accessibilityService.getRootInActiveWindow());
-        msgSb.append("################################################################################################################################");
-        log(msgSb.toString());
+        LinkedASPlugin.log("################################################################################################################################");
     }
 
     protected void traverse(AccessibilityNodeInfo rootNodeInfo) {
@@ -54,28 +48,12 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
             }
             sb.append("    ");
         }
-        msgSb.append(String.format("%s%s\n", sb.toString(), getLogInfo(nodeInfo)));
+        LinkedASPlugin.log(String.format("%s%s\n", sb.toString(), getLogInfo(nodeInfo)));
     }
 
     protected String getLogInfo(AccessibilityNodeInfo nodeInfo) {
         Rect bounds = new Rect();
         nodeInfo.getBoundsInScreen(bounds);
         return String.format("%s; text=%s; desc=%s bounds=%s", nodeInfo.getClassName(), nodeInfo.getText(), nodeInfo.getContentDescription(), bounds.toShortString());
-    }
-
-    public static void log(String msg) {
-        int msgLength = msg.length();
-        int start = 0;
-        int end = MAXLENGTH;
-        for (; ; ) {
-            if (msgLength > end) {
-                LinkedASPlugin.log(msg.substring(start, end));
-                start = end;
-                end = end + MAXLENGTH;
-            } else {
-                LinkedASPlugin.log(msg.substring(start, msgLength));
-                break;
-            }
-        }
     }
 }

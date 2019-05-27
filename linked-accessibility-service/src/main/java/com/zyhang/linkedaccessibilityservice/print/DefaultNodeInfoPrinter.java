@@ -15,6 +15,8 @@ import com.zyhang.linkedaccessibilityservice.LinkedASPlugin;
 @SuppressWarnings("WeakerAccess")
 public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
 
+    private static final int MAXLENGTH = 2000;
+
     protected int floor;
     protected StringBuilder msgSb = new StringBuilder();
 
@@ -26,7 +28,7 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
         msgSb.append("################################################################################################################################\n");
         traverse(accessibilityService.getRootInActiveWindow());
         msgSb.append("################################################################################################################################");
-        LinkedASPlugin.log(msgSb.toString());
+        log(msgSb.toString());
     }
 
     protected void traverse(AccessibilityNodeInfo rootNodeInfo) {
@@ -59,5 +61,21 @@ public class DefaultNodeInfoPrinter implements NodeInfoPrinter {
         Rect bounds = new Rect();
         nodeInfo.getBoundsInScreen(bounds);
         return String.format("%s; text=%s; desc=%s bounds=%s", nodeInfo.getClassName(), nodeInfo.getText(), nodeInfo.getContentDescription(), bounds.toShortString());
+    }
+
+    public static void log(String msg) {
+        int msgLength = msg.length();
+        int start = 0;
+        int end = MAXLENGTH;
+        for (; ; ) {
+            if (msgLength > end) {
+                LinkedASPlugin.log(msg.substring(start, end));
+                start = end;
+                end = end + MAXLENGTH;
+            } else {
+                LinkedASPlugin.log(msg.substring(start, msgLength));
+                break;
+            }
+        }
     }
 }

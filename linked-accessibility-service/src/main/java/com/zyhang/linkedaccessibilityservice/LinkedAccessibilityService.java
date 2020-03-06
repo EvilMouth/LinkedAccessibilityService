@@ -15,7 +15,7 @@ import com.zyhang.linkedaccessibilityservice.print.NodeInfoPrintable;
 
 abstract public class LinkedAccessibilityService extends AccessibilityService {
 
-    private Situation[] situations;
+    protected Situation[] situations;
 
     @CallSuper
     @Override
@@ -94,6 +94,14 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
     @CallSuper
     public void reset() {
         situations = firstSituations();
+    }
+
+    /**
+     * reset state with custom situations
+     */
+    @CallSuper
+    public void reset(Situation[] _situations) {
+        situations = _situations;
     }
 
     /**

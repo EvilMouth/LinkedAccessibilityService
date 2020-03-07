@@ -67,6 +67,60 @@ public class LinkedASUtils {
     }
 
     /**
+     * find node by text
+     *
+     * @param rootNode The root node if this service can retrieve window content.
+     * @param text     target text
+     * @param fuzzy    fuzzy query
+     * @return True if node exist and click
+     */
+    public static boolean isTextExist(AccessibilityNodeInfo rootNode, String text, boolean fuzzy) {
+        if (!fuzzy) return isTextExist(rootNode, text);
+        if (null == rootNode) return false;
+        if (!TextUtils.isEmpty(rootNode.getText()) && rootNode.getText().toString().contains(text)) {
+            return true;
+        }
+        for (int i = 0, size = rootNode.getChildCount(); i < size; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            boolean exist = isTextExist(nodeInfo, text, true);
+            if (exist) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finds Button {@link AccessibilityNodeInfo}s.
+     *
+     * @param rootNode The root node if this service can retrieve window content.
+     * @return A list of node info.
+     */
+    public static List<AccessibilityNodeInfo> findAllButton(AccessibilityNodeInfo rootNode) {
+        if (rootNode == null) {
+            return Collections.emptyList();
+        }
+        List<AccessibilityNodeInfo> list = new ArrayList<>();
+        if ("android.widget.Button".equals(rootNode.getClassName().toString())) {
+            list.add(rootNode);
+        }
+        for (int i = 0, size = rootNode.getChildCount(); i < size; i++) {
+            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
+            if (nodeInfo == null) {
+                continue;
+            }
+            List<AccessibilityNodeInfo> childList = findAllButton(nodeInfo);
+            if (!childList.isEmpty()) {
+                list.addAll(findAllButton(nodeInfo));
+            }
+        }
+        return list;
+    }
+
+    /**
      * find node by text and click
      *
      * @param rootNode The root node if this service can retrieve window content.
@@ -85,34 +139,6 @@ public class LinkedASUtils {
             }
         }
         return find;
-    }
-
-    /**
-     * Finds Button {@link AccessibilityNodeInfo}s.
-     *
-     * @param rootNode The root node if this service can retrieve window content.
-     * @return A list of node info.
-     */
-    public static List<AccessibilityNodeInfo> findAllButton(AccessibilityNodeInfo rootNode) {
-        if (rootNode == null) {
-            return Collections.emptyList();
-        }
-        List<AccessibilityNodeInfo> list = new ArrayList<>();
-        for (int i = 0, size = rootNode.getChildCount(); i < size; i++) {
-            AccessibilityNodeInfo nodeInfo = rootNode.getChild(i);
-            if (nodeInfo == null) {
-                continue;
-            }
-            if ("android.widget.Button".equals(nodeInfo.getClassName().toString())) {
-                list.add(nodeInfo);
-                continue;
-            }
-            List<AccessibilityNodeInfo> childList = findAllButton(nodeInfo);
-            if (!childList.isEmpty()) {
-                list.addAll(findAllButton(nodeInfo));
-            }
-        }
-        return list;
     }
 
     private static boolean findAndClickByTextOrder(List<AccessibilityNodeInfo> list) {

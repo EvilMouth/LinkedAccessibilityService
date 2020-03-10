@@ -76,7 +76,6 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
         return super.onUnbind(intent);
     }
 
-    @CallSuper
     @Override
     public void onInterrupt() {
         LinkedASPlugin.log("onInterrupt");
@@ -91,7 +90,6 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
     /**
      * reset state
      */
-    @CallSuper
     public void reset() {
         situations = firstSituations();
     }
@@ -99,7 +97,6 @@ abstract public class LinkedAccessibilityService extends AccessibilityService {
     /**
      * reset state with custom situations
      */
-    @CallSuper
     public void reset(Situation[] _situations) {
         situations = _situations;
     }

@@ -1,1 +1,1 @@
-include ':example', ':linked-accessibility-service'
+include ':example', ':linkedaccessibilityservice'
